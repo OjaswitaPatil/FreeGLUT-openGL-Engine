@@ -1,4 +1,4 @@
-::clean
+::clean folder
 cls
 del OGL.obj
 del OGL.exe
