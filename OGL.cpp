@@ -2,13 +2,13 @@
 #include "globalHeaders.h"
 #include "shape.h"
 #include "imGuiExtenstion.h"
+#include "LinkedList.h"
 
 // global variable declarations
 BOOL bFullScreen = FALSE;
 int windowWidth = 1280;
 int windowHeight = 720;
 
-Shape shape[2];
 
 // Entry-point function
 int main(int argc, char* argv[])
@@ -61,35 +61,6 @@ int initialize(void)
 		1.0f 									//alpha
 	);
 
-
-
-	for(int i = 0; i < 2; i++)
-	{
-
-
-		shape[i].position.x = 0.0f;
-		shape[i].position.y = 0.0f;
-		shape[i].position.z = 0.0f;
-
-		shape[i].rotationAngle.x = 0.0f;
-		shape[i].rotationAngle.y = 0.0f;
-		shape[i].rotationAngle.z = 0.0f;
-
-		shape[i].scale.x = 0.15f;
-		shape[i].scale.y = 0.15f;
-		shape[i].scale.z = 0.15f;
-
-		shape[i].color[0] = 1.0f;
-		shape[i].color[1] = 0.0f;
-		shape[i].color[2] = 0.0f;
-
-	}
-
-	shape[0].shapetype = TRIANGLE;
-	shape[1].shapetype = RECTANGLE;
-
-
-
 	return(0);
 }
 
@@ -114,9 +85,6 @@ void resize(int width, int height)
 
 void display(void)
 {
-	void startimGuiFrame(void);
-	void renderimGui(void);
-
 	//----------------------IMGUI----------------------------
 	{
 		// Start the ImGui frame
@@ -124,40 +92,80 @@ void display(void)
 
 		ImGui::Begin("Engine's Controls");
 
-		//--- TRANSLATE------
-			ImGui::SliderFloat("PositionX", &(shape->position.x), -1.0f, 1.0f);
-			ImGui::SliderFloat("PositionY", &(shape->position.y), -1.0f, 1.0f);
+		if (ImGui::Button("Create Triangle"))  
+		{                        
+			createShape(TRIANGLE);
+		}
+
+		if (ImGui::Button("Create Rectangle")) 
+		{                   
+			createShape(RECTANGLE);
+		}
+
+		if(selectedShape != NULL) //means linklist has at least one node
+		{	
+
+			//--- TRANSLATE------
+			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -1.0f, 1.0f);
+			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -1.0f, 1.0f);
 
 			//--- SCALE------
-			float beforeScaleAllX = shape->scale.x;
-			ImGui::SliderFloat("ScaleAll", &(shape->scale.x), 0.0f, 1.0f);
-			if(beforeScaleAllX !=  shape->scale.x )
+			float beforeScaleAllX = selectedShape->shape.scale.x;
+			ImGui::SliderFloat("ScaleAll", &(selectedShape->shape.scale.x), 0.0f, 1.0f);
+			if(beforeScaleAllX !=  selectedShape->shape.scale.x )
 			{
-				shape->scale.y = shape->scale.x;
-				shape->scale.z = shape->scale.x;
+				selectedShape->shape.scale.y = selectedShape->shape.scale.x;
+				selectedShape->shape.scale.z = selectedShape->shape.scale.x;
 			}
 
-			ImGui::SliderFloat("ScaleX", &(shape->scale.x), 0.0f, 1.0f);
-			ImGui::SliderFloat("ScaleY", &(shape->scale.y), 0.0f, 1.0f);
+			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), 0.0f, 1.0f);
+			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), 0.0f, 1.0f);
 
 			//--- Rotation------
-			ImGui::SliderFloat("rotationX", &(shape->rotationAngle.x), 0.0f, 360.0f);
-			ImGui::SliderFloat("rotationY", &(shape->rotationAngle.y), 0.0f, 360.0f);
-			ImGui::SliderFloat("rotationZ", &(shape->rotationAngle.z), 0.0f, 360.0f);
+			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
+			ImGui::SliderFloat("rotationY", &(selectedShape->shape.rotationAngle.y), 0.0f, 360.0f);
+			ImGui::SliderFloat("rotationZ", &(selectedShape->shape.rotationAngle.z), 0.0f, 360.0f);
 
-            ImGui::ColorEdit3("color", (float*)shape->color);
-	
+			if (ImGui::Button("Next Shape"))  
+			{
+				selectedShape = selectedShape->next;
+			}
+			if (ImGui::Button("previous Shape"))  
+			{    
+				selectedShape = selectedShape->pre;
+			}
+			
+			ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
+
+			//ImGui::SameLine();
+
+			ImGui::ColorEdit3("color", (float*)selectedShape->shape.color);
+
+
+			if (ImGui::Button("Delete Shape"))  
+			{    
+				deleteShape(selectedShape);
+			}
+
+
+
+		}
+
 		ImGui::End();
 	}
 	//--------------------------------------------------------
-	
 
-	// code
+
+
+
+	
+	//------------------------DRAW--------------------------
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	drawShape(&shape[0]);
+	//Draw all shapes
+	drawAllShapes();
 
-	 // Render ImGui
+ 	// Render ImGui
     renderimGui();
 	//--------------------------------------------------------
 
