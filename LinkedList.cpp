@@ -19,9 +19,9 @@ void createShape(ShapeType shapeType)
     ptr->shape.rotationAngle.y = 0.0f;
     ptr->shape.rotationAngle.z = 0.0f;
 
-    ptr->shape.scale.x = 0.15f;
-    ptr->shape.scale.y = 0.15f;
-    ptr->shape.scale.z = 0.15f;
+    ptr->shape.scale.x = 0.35f;
+    ptr->shape.scale.y = 0.35f;
+    ptr->shape.scale.z = 0.35f;
 
     ptr->shape.color[0] = 1.0f;
     ptr->shape.color[1] = 0.0f;

@@ -61,6 +61,10 @@ int initialize(void)
 		1.0f 									//alpha
 	);
 
+	// Enable depth testing
+    glEnable(GL_DEPTH_TEST);
+
+
 	return(0);
 }
 
@@ -74,10 +78,12 @@ void resize(int width, int height)
 	windowHeight = height;
 
 	glViewport(0, 0, width, height);
-	// glMatrixMode(GL_PROJECTION);
-	// glLoadIdentity();
-	// gluPerspective(45.0f, 1.0f, 0.1f, 100.0f);
-	// glMatrixMode(GL_MODELVIEW);
+	
+	// Set up the projection matrix for 3D viewing
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (double)width / (double)height, 1.0, 200.0); // FOV, aspect ratio, near and far planes
+    glMatrixMode(GL_MODELVIEW); // Switch back to modelview matrix
 
     //update imGui Display Size as per window size
 	updateimGuiDisplaySize(width, height);
@@ -155,12 +161,18 @@ void display(void)
 	}
 	//--------------------------------------------------------
 
+    //------------------------DRAW--------------------------
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Load the identity matrix to reset transformations
+    glLoadIdentity();
 
 
+    // Use gluLookAt to set up the camera
+    gluLookAt(0.0f, 0.0f, 5.0f,   // Eye position: camera at (0,0,5)
+              0.0f, 0.0f, 0.0f,   // Look at the origin (0,0,0)
+              0.0f, 1.0f, 0.0f);  // Up vector: Y-axis is the "up" direction
 
-	
-	//------------------------DRAW--------------------------
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	//Draw all shapes
 	drawAllShapes();
@@ -169,8 +181,9 @@ void display(void)
     renderimGui();
 	//--------------------------------------------------------
 
-    glutPostRedisplay();
 	glutSwapBuffers();
+    glutPostRedisplay();
+
 }
 
 void keyboard(unsigned char key, int x, int y)
