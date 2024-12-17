@@ -108,24 +108,31 @@ void display(void)
 			createShape(RECTANGLE);
 		}
 
+		if (ImGui::Button("Create cube")) 
+		{                   
+			createShape(CUBE);
+		}
+
 		if(selectedShape != NULL) //means linklist has at least one node
 		{	
 
 			//--- TRANSLATE------
-			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -1.0f, 1.0f);
-			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -1.0f, 1.0f);
+			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -3.0f, 3.0f);
+			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -3.0f, 3.0f);
+			ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -3.0f, 3.0f);
 
 			//--- SCALE------
 			float beforeScaleAllX = selectedShape->shape.scale.x;
-			ImGui::SliderFloat("ScaleAll", &(selectedShape->shape.scale.x), 0.0f, 1.0f);
+			ImGui::SliderFloat("ScaleAll", &(selectedShape->shape.scale.x), 0.0f, 3.0f);
 			if(beforeScaleAllX !=  selectedShape->shape.scale.x )
 			{
 				selectedShape->shape.scale.y = selectedShape->shape.scale.x;
 				selectedShape->shape.scale.z = selectedShape->shape.scale.x;
 			}
 
-			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), 0.0f, 1.0f);
-			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), 0.0f, 1.0f);
+			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), 0.0f, 3.0f);
+			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), 0.0f, 3.0f);
+			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), 0.0f, 3.0f);
 
 			//--- Rotation------
 			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
@@ -172,7 +179,6 @@ void display(void)
     gluLookAt(0.0f, 0.0f, 5.0f,   // Eye position: camera at (0,0,5)
               0.0f, 0.0f, 0.0f,   // Look at the origin (0,0,0)
               0.0f, 1.0f, 0.0f);  // Up vector: Y-axis is the "up" direction
-
 
 	//Draw all shapes
 	drawAllShapes();

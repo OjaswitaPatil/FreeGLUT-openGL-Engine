@@ -99,4 +99,7 @@ void drawAllShapes(void)
 
         ptr= ptr->next;   
     }
+
+    if(selectedShape!= NULL)
+        drawGridAroundSelectedShape(&(selectedShape->shape));
 }

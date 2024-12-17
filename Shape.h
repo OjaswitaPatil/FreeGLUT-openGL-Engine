@@ -14,7 +14,7 @@ typedef enum
 {
 	TRIANGLE = 0,
 	RECTANGLE,
-	LINE
+	CUBE
 }ShapeType;
 
 
@@ -31,8 +31,8 @@ typedef struct
 void drawShape(Shape *shape);
 void drawTriangle(Shape *shape);
 void drawRectangle(Shape *shape);
-
-
+void drawCube(Shape *shape);
+void drawGridAroundSelectedShape(Shape *shape);
 
 
 #endif
