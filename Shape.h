@@ -33,6 +33,7 @@ void drawTriangle(Shape *shape);
 void drawRectangle(Shape *shape);
 void drawCube(Shape *shape);
 void drawGridAroundSelectedShape(Shape *shape);
+void drawGridForEntireScene(void);
 
 
 #endif

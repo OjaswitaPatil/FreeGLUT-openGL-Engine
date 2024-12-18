@@ -9,6 +9,12 @@ BOOL bFullScreen = FALSE;
 int windowWidth = 1280;
 int windowHeight = 720;
 
+struct ScreenRotation
+{
+	Coordinates rotate;
+};
+
+struct ScreenRotation screenRotation;
 
 // Entry-point function
 int main(int argc, char* argv[])
@@ -65,6 +71,12 @@ int initialize(void)
     glEnable(GL_DEPTH_TEST);
 
 
+	//initialize scene rotation-----------
+	screenRotation.rotate.x = 9.0f;
+	screenRotation.rotate.y = 12.0f;
+	screenRotation.rotate.z = 0.0f;
+	//-------------------------------
+
 	return(0);
 }
 
@@ -92,11 +104,24 @@ void resize(int width, int height)
 void display(void)
 {
 	//----------------------IMGUI----------------------------
+	//engine controls
 	{
 		// Start the ImGui frame
 		startimGuiFrame();
 
 		ImGui::Begin("Engine's Controls");
+
+		//scene rotoation
+		ImGui::SliderFloat("SceneRotoationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
+		ImGui::SliderFloat("SceneRotoationY", &(screenRotation.rotate.y),-360.0f, 360.0f);
+		ImGui::SliderFloat("SceneRotoationZ", &(screenRotation.rotate.z),-360.0f, 360.0f);
+		if (ImGui::Button("Reset Scene Rotation"))  
+		{                        
+			screenRotation.rotate.x = 9.0f;
+			screenRotation.rotate.y = 12.0f;
+			screenRotation.rotate.z = 0.0f;
+		}
+
 
 		if (ImGui::Button("Create Triangle"))  
 		{                        
@@ -117,9 +142,9 @@ void display(void)
 		{	
 
 			//--- TRANSLATE------
-			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -3.0f, 3.0f);
-			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -3.0f, 3.0f);
-			ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -3.0f, 3.0f);
+			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -15.0f, 15.0f);
+			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -15.0f, 15.0f);
+			ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -15.0f, 15.0f);
 
 			//--- SCALE------
 			float beforeScaleAllX = selectedShape->shape.scale.x;
@@ -130,9 +155,9 @@ void display(void)
 				selectedShape->shape.scale.z = selectedShape->shape.scale.x;
 			}
 
-			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), 0.0f, 3.0f);
-			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), 0.0f, 3.0f);
-			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), 0.0f, 3.0f);
+			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), -1.0f, 5.0f);
+			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), -1.0f, 5.0f);
+			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), -1.0f, 5.0f);
 
 			//--- Rotation------
 			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
@@ -159,9 +184,6 @@ void display(void)
 			{    
 				deleteShape(selectedShape);
 			}
-
-
-
 		}
 
 		ImGui::End();
@@ -175,13 +197,22 @@ void display(void)
     glLoadIdentity();
 
 
-    // Use gluLookAt to set up the camera
-    gluLookAt(0.0f, 0.0f, 5.0f,   // Eye position: camera at (0,0,5)
-              0.0f, 0.0f, 0.0f,   // Look at the origin (0,0,0)
-              0.0f, 1.0f, 0.0f);  // Up vector: Y-axis is the "up" direction
 
-	//Draw all shapes
-	drawAllShapes();
+
+
+	glPushMatrix();
+
+		glTranslatef(0.0f, 0.0f, -5.0f);
+		glRotatef(screenRotation.rotate.x, 1.0f, 0.0f, 0.0f);
+		glRotatef(screenRotation.rotate.y, 0.0f, 1.0f, 0.0f);
+		glRotatef(screenRotation.rotate.z, 0.0f, 0.0f, 1.0f);
+
+		drawGridForEntireScene();
+
+		//Draw all shapes
+		drawAllShapes();
+
+	glPopMatrix();
 
  	// Render ImGui
     renderimGui();

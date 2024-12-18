@@ -139,6 +139,7 @@ void drawGridAroundSelectedShape(Shape *shape)
 	glScalef(shape->scale.x, shape->scale.y, shape->scale.z);
 
 	//X-Axis
+	glLineWidth(1.0f);
 	glBegin(GL_LINES);
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-3.0f, 0.0f, 0.0f);
@@ -162,3 +163,58 @@ void drawGridAroundSelectedShape(Shape *shape)
 	glPopMatrix();
 }
 
+void drawGridForEntireScene(void)
+{
+	glPushMatrix();
+
+	//X-Axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(-10.0f, 0.0f, 0.0f);
+	glVertex3f(10.0f, 0.0f, 0.0f);
+	glEnd();
+
+	for(int i = 0; i <= 20; i++)
+	{
+		glLineWidth(1.0f);
+		glBegin(GL_LINES);
+		glColor3f(0.5f, 0.5f, 0.5f);
+
+		//lines on z axis
+		glVertex3f(-10.0f, 0.0f, (float)i/2);
+		glVertex3f(10.0f, 0.0f, (float)i/2);
+
+		glVertex3f(-10.0f, 0.0f, -(float)i/2);
+		glVertex3f(10.0f, 0.0f, -(float)i/2);
+
+		//lines on X axis
+		glVertex3f((float)i/2, 0.0f, -10.0f);
+		glVertex3f((float)i/2, 0.0f, 10.0f);
+
+		glVertex3f(-(float)i/2, 0.0f, -10.0f);
+		glVertex3f(-(float)i/2, 0.0f, 10.0f);
+
+
+		glEnd();
+	}
+
+
+	//Y Axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 10.0f, 0.0f);
+	glVertex3f(0.0f, -10.0f, 0.0f);
+	glEnd();
+
+	//z axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, -20.0f);
+	glEnd();
+
+	glPopMatrix();
+}
