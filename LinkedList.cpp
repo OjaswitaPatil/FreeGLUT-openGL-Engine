@@ -57,6 +57,8 @@ void createShape(ShapeType shapeType)
 
     if(head == NULL)
     {
+        ptr->next = ptr;
+        ptr->pre = ptr;
         head = ptr;
         last = ptr;
     }
