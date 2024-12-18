@@ -112,9 +112,10 @@ void display(void)
 		ImGui::Begin("Engine's Controls");
 
 		//scene rotoation
-		ImGui::SliderFloat("SceneRotoationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
-		ImGui::SliderFloat("SceneRotoationY", &(screenRotation.rotate.y),-360.0f, 360.0f);
-		ImGui::SliderFloat("SceneRotoationZ", &(screenRotation.rotate.z),-360.0f, 360.0f);
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Scene Rotation");
+		ImGui::SliderFloat("SceneRotationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
+		ImGui::SliderFloat("SceneRotationY", &(screenRotation.rotate.y),-360.0f, 360.0f);
+		ImGui::SliderFloat("SceneRotationZ", &(screenRotation.rotate.z),-360.0f, 360.0f);
 		if (ImGui::Button("Reset Scene Rotation"))  
 		{                        
 			screenRotation.rotate.x = 9.0f;
@@ -122,41 +123,64 @@ void display(void)
 			screenRotation.rotate.z = 0.0f;
 		}
 
+		ImGui::Separator();
 
-		if (ImGui::Button("Create Triangle"))  
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Add/Delete Shape");
+		if (ImGui::Button("Triangle"))  
 		{                        
 			createShape(TRIANGLE);
 		}
-
-		if (ImGui::Button("Create Rectangle")) 
+		ImGui::SameLine();
+		if (ImGui::Button("Rectangle")) 
 		{                   
 			createShape(RECTANGLE);
 		}
-
-		if (ImGui::Button("Create cube")) 
+	
+		if (ImGui::Button("Cube")) 
 		{                   
 			createShape(CUBE);
 		}
-
-		if (ImGui::Button("Create Sphere"))  
+		ImGui::SameLine();
+		if (ImGui::Button("Sphere"))  
 		{                        
 			createShape(SPHERE);
 		}
-
-		if (ImGui::Button("Create cylinder"))  
+		ImGui::SameLine();
+		if (ImGui::Button("Cylinder"))  
 		{                        
 			createShape(CYLINDER);
 		}
+		ImGui::NewLine();
+		if (ImGui::Button("Delete selected Shape"))  
+		{    
+			deleteShape(selectedShape);
+		}
 
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Navigation");
+		if (ImGui::Button("Next Shape"))  
+		{
+			selectedShape = selectedShape->next;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("previous Shape"))  
+		{    
+			selectedShape = selectedShape->pre;
+		}
+
+		
 		if(selectedShape != NULL) //means linklist has at least one node
 		{	
-
 			//--- TRANSLATE------
+			ImGui::NewLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's placement");
 			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -15.0f, 15.0f);
 			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -15.0f, 15.0f);
 			ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -15.0f, 15.0f);
 
 			//--- SCALE------
+			ImGui::NewLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Scaling");
 			float beforeScaleAllX = selectedShape->shape.scale.x;
 			ImGui::SliderFloat("ScaleAll", &(selectedShape->shape.scale.x), 0.0f, 3.0f);
 			if(beforeScaleAllX !=  selectedShape->shape.scale.x )
@@ -170,19 +194,30 @@ void display(void)
 			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), -1.0f, 5.0f);
 
 			//--- Rotation------
+			ImGui::NewLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Rotation");
 			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
 			ImGui::SliderFloat("rotationY", &(selectedShape->shape.rotationAngle.y), 0.0f, 360.0f);
 			ImGui::SliderFloat("rotationZ", &(selectedShape->shape.rotationAngle.z), 0.0f, 360.0f);
 
+			//--- COlor -----
+			ImGui::NewLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Color");
+			ImGui::ColorEdit3("color", (float*)selectedShape->shape.color);
+
 			//custom attributes
 			if(selectedShape->shape.shapetype == SPHERE)
 			{
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Custom attributes");
 				ImGui::SliderFloat("drawType", &(selectedShape->shape.customShapeAttributes[0]), 0.0f, 1.0f);
 				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 30.0f);
 				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 30.0f);
 			}
 			if(selectedShape->shape.shapetype == CYLINDER)
 			{
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Custom attributes");
 				ImGui::SliderFloat("drawType", &(selectedShape->shape.customShapeAttributes[0]), 0.0f, 1.0f);
 				ImGui::SliderFloat("1st opening redius", &(selectedShape->shape.customShapeAttributes[1]), 0.0f, 10.0f);
 				ImGui::SliderFloat("2nd opening redius", &(selectedShape->shape.customShapeAttributes[2]), 0.0f, 10.0f);
@@ -191,26 +226,7 @@ void display(void)
 				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 30.0f);
 			}
 
-			if (ImGui::Button("Next Shape"))  
-			{
-				selectedShape = selectedShape->next;
-			}
-			if (ImGui::Button("previous Shape"))  
-			{    
-				selectedShape = selectedShape->pre;
-			}
-			
-			ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
-
-			//ImGui::SameLine();
-
-			ImGui::ColorEdit3("color", (float*)selectedShape->shape.color);
-
-
-			if (ImGui::Button("Delete Shape"))  
-			{    
-				deleteShape(selectedShape);
-			}
+			//ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
 		}
 
 		ImGui::End();
@@ -224,12 +240,9 @@ void display(void)
     glLoadIdentity();
 
 
-
-
-
 	glPushMatrix();
 
-		glTranslatef(0.0f, 0.0f, -5.0f);
+		glTranslatef(0.0f, 0.0f, -10.0f);
 		glRotatef(screenRotation.rotate.x, 1.0f, 0.0f, 0.0f);
 		glRotatef(screenRotation.rotate.y, 0.0f, 1.0f, 0.0f);
 		glRotatef(screenRotation.rotate.z, 0.0f, 0.0f, 1.0f);
