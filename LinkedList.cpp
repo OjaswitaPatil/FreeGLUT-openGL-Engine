@@ -27,6 +27,31 @@ void createShape(ShapeType shapeType)
     ptr->shape.color[1] = 0.0f;
     ptr->shape.color[2] = 0.0f;
 
+    switch(shapeType)
+    {
+        case SPHERE:
+            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float)*3);
+            ptr->shape.customShapeAttributes[0] = 1.0f;   //glu fill
+            ptr->shape.customShapeAttributes[1] = 20.0f;  //slices
+            ptr->shape.customShapeAttributes[2] = 20.0f;  //stacks
+            break;
+
+        case CYLINDER:
+            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float)*6);
+            ptr->shape.customShapeAttributes[0] = 1.0f;   //glu fill
+            ptr->shape.customShapeAttributes[1] = 0.5f;   //1st opening
+            ptr->shape.customShapeAttributes[2] = 0.5f;   //2nd opening
+            ptr->shape.customShapeAttributes[3] = 4.0f;   //length
+            ptr->shape.customShapeAttributes[4] = 20.0f;  //slices
+            ptr->shape.customShapeAttributes[5] = 20.0f;  //stacks
+            break;
+            
+        default:
+            ptr->shape.customShapeAttributes = NULL;
+    }
+
+             
+
     ptr->next = NULL;
     ptr->pre = NULL;
 
@@ -80,6 +105,13 @@ void deleteShape(struct Node *ptr)
     else   
         selectedShape = NULL;
 
+    //delete customShapeAttrubute heap memory if its not null
+    if(ptr->shape.customShapeAttributes != NULL)  
+    {
+        free(ptr->shape.customShapeAttributes);
+    }  
+  
+    //free structre shape heap memory
     free(ptr);
 }
 

@@ -138,6 +138,16 @@ void display(void)
 			createShape(CUBE);
 		}
 
+		if (ImGui::Button("Create Sphere"))  
+		{                        
+			createShape(SPHERE);
+		}
+
+		if (ImGui::Button("Create cylinder"))  
+		{                        
+			createShape(CYLINDER);
+		}
+
 		if(selectedShape != NULL) //means linklist has at least one node
 		{	
 
@@ -163,6 +173,23 @@ void display(void)
 			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
 			ImGui::SliderFloat("rotationY", &(selectedShape->shape.rotationAngle.y), 0.0f, 360.0f);
 			ImGui::SliderFloat("rotationZ", &(selectedShape->shape.rotationAngle.z), 0.0f, 360.0f);
+
+			//custom attributes
+			if(selectedShape->shape.shapetype == SPHERE)
+			{
+				ImGui::SliderFloat("drawType", &(selectedShape->shape.customShapeAttributes[0]), 0.0f, 1.0f);
+				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 30.0f);
+				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 30.0f);
+			}
+			if(selectedShape->shape.shapetype == CYLINDER)
+			{
+				ImGui::SliderFloat("drawType", &(selectedShape->shape.customShapeAttributes[0]), 0.0f, 1.0f);
+				ImGui::SliderFloat("1st opening redius", &(selectedShape->shape.customShapeAttributes[1]), 0.0f, 10.0f);
+				ImGui::SliderFloat("2nd opening redius", &(selectedShape->shape.customShapeAttributes[2]), 0.0f, 10.0f);
+				ImGui::SliderFloat("length", &(selectedShape->shape.customShapeAttributes[3]), 0.0f, 20.0f);
+				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[4]), 1.0f, 30.0f);
+				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 30.0f);
+			}
 
 			if (ImGui::Button("Next Shape"))  
 			{
