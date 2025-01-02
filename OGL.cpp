@@ -105,12 +105,15 @@ void display(void)
 {
 	//----------------------IMGUI----------------------------
 	//engine controls
+	static bool showGrid = true;
 	{
 		// Start the ImGui frame
 		startimGuiFrame();
 
 		ImGui::Begin("Engine's Controls");
 
+		ImGui::Checkbox("Show Grid", &showGrid);
+	
 		//scene rotoation
 		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Scene Rotation");
 		ImGui::SliderFloat("SceneRotationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
@@ -167,6 +170,7 @@ void display(void)
 		{    
 			selectedShape = selectedShape->pre;
 		}
+
 
 		
 		if(selectedShape != NULL) //means linklist has at least one node
@@ -239,20 +243,22 @@ void display(void)
 	// Load the identity matrix to reset transformations
     glLoadIdentity();
 
+    
+		glPushMatrix();
 
-	glPushMatrix();
+			glTranslatef(0.0f, 0.0f, -10.0f);
+			glRotatef(screenRotation.rotate.x, 1.0f, 0.0f, 0.0f);
+			glRotatef(screenRotation.rotate.y, 0.0f, 1.0f, 0.0f);
+			glRotatef(screenRotation.rotate.z, 0.0f, 0.0f, 1.0f);
 
-		glTranslatef(0.0f, 0.0f, -10.0f);
-		glRotatef(screenRotation.rotate.x, 1.0f, 0.0f, 0.0f);
-		glRotatef(screenRotation.rotate.y, 0.0f, 1.0f, 0.0f);
-		glRotatef(screenRotation.rotate.z, 0.0f, 0.0f, 1.0f);
+            if(showGrid == true)
+			   drawGridForEntireScene();
 
-		drawGridForEntireScene();
+			//Draw all shapes
+			drawAllShapes();
 
-		//Draw all shapes
-		drawAllShapes();
-
-	glPopMatrix();
+		glPopMatrix();
+	
 
  	// Render ImGui
     renderimGui();
