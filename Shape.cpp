@@ -248,7 +248,7 @@ void drawSphere(Shape *shape)
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
     // Draw the sphere
-    glColor3f(0.0f, 0.0f, 1.0f);  // Set color to blue
+    glColor3f(shape->color[0], shape->color[1], shape->color[2]);
     gluSphere(quadric, 1.5f, (int)shape->customShapeAttributes[1], (int)shape->customShapeAttributes[2]);  // Radius = 1.0, slices = 32, stacks = 32
 
     gluDeleteQuadric(quadric);  // Clean up and delete the quadric object
@@ -278,7 +278,7 @@ void drawCylinder(Shape *shape)
     gluQuadricNormals(quadric, GLU_SMOOTH); // Smooth shading
 
     // Draw a cylinder with radius 1, height 3, and 32 slices
-    glColor3f(1.0f, 0.5f, 0.0f);  // Color the cylinder orange
+    glColor3f(shape->color[0], shape->color[1], shape->color[2]);
     gluCylinder(quadric, shape->customShapeAttributes[1] ,shape->customShapeAttributes[2], shape->customShapeAttributes[3],  (int)shape->customShapeAttributes[4], (int)shape->customShapeAttributes[5]);
 
     gluDeleteQuadric(quadric);  // Clean up
