@@ -185,15 +185,18 @@ void display(void)
 			//--- SCALE------
 			ImGui::NewLine();
 			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Scaling");
-			float beforeScaleAllX = selectedShape->shape.scale.x;
-			ImGui::SliderFloat("ScaleAll", &(selectedShape->shape.scale.x), 0.0f, 3.0f);
-			if(beforeScaleAllX !=  selectedShape->shape.scale.x )
+			
+			static float scaleAllOffSet = 0.0f;
+			float beforeScaleAllOffSet = scaleAllOffSet;
+			float scaleAllOffSetChanged = 0.0f;
+			if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -200.0f, 200.0f))
 			{
-				selectedShape->shape.scale.y = selectedShape->shape.scale.x;
-				selectedShape->shape.scale.z = selectedShape->shape.scale.x;
+				scaleAllOffSetChanged = scaleAllOffSet-beforeScaleAllOffSet;
+				selectedShape->shape.scale.x += selectedShape->shape.scale.x * (scaleAllOffSetChanged / 100);
+				selectedShape->shape.scale.y += selectedShape->shape.scale.y * (scaleAllOffSetChanged / 100);
+				selectedShape->shape.scale.z += selectedShape->shape.scale.z * (scaleAllOffSetChanged / 100);
 			}
-
-			ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), -1.0f, 5.0f);
+     		ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), -1.0f, 5.0f);
 			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), -1.0f, 5.0f);
 			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), -1.0f, 5.0f);
 
@@ -215,8 +218,8 @@ void display(void)
 				ImGui::NewLine();
 				ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Custom attributes");
 				ImGui::SliderFloat("drawType", &(selectedShape->shape.customShapeAttributes[0]), 0.0f, 1.0f);
-				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 30.0f);
-				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 30.0f);
+				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 60.0f);
+				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 60.0f);
 			}
 			if(selectedShape->shape.shapetype == CYLINDER)
 			{
@@ -226,8 +229,8 @@ void display(void)
 				ImGui::SliderFloat("1st opening redius", &(selectedShape->shape.customShapeAttributes[1]), 0.0f, 10.0f);
 				ImGui::SliderFloat("2nd opening redius", &(selectedShape->shape.customShapeAttributes[2]), 0.0f, 10.0f);
 				ImGui::SliderFloat("length", &(selectedShape->shape.customShapeAttributes[3]), 0.0f, 20.0f);
-				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[4]), 1.0f, 30.0f);
-				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 30.0f);
+				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[4]), 1.0f, 60.0f);
+				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 60.0f);
 			}
 
 			//ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
