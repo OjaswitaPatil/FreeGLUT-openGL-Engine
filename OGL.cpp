@@ -106,6 +106,7 @@ void display(void)
 	//----------------------IMGUI----------------------------
 	//engine controls
 	static bool showGrid = true;
+	static float scaleAllOffSet = 0.0f;
 	{
 		// Start the ImGui frame
 		startimGuiFrame();
@@ -132,26 +133,31 @@ void display(void)
 		if (ImGui::Button("Triangle"))  
 		{                        
 			createShape(TRIANGLE);
+			scaleAllOffSet = 0.0f;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Rectangle")) 
 		{                   
 			createShape(RECTANGLE);
+			scaleAllOffSet = 0.0f;
 		}
 	
 		if (ImGui::Button("Cube")) 
 		{                   
 			createShape(CUBE);
+			scaleAllOffSet = 0.0f;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Sphere"))  
 		{                        
 			createShape(SPHERE);
+			scaleAllOffSet = 0.0f;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Cylinder"))  
 		{                        
 			createShape(CYLINDER);
+			scaleAllOffSet = 0.0f;
 		}
 		ImGui::NewLine();
 		if (ImGui::Button("Delete selected Shape"))  
@@ -186,10 +192,9 @@ void display(void)
 			ImGui::NewLine();
 			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Scaling");
 			
-			static float scaleAllOffSet = 0.0f;
 			float beforeScaleAllOffSet = scaleAllOffSet;
 			float scaleAllOffSetChanged = 0.0f;
-			if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -200.0f, 200.0f))
+			if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -400.0f, 400.0f))
 			{
 				scaleAllOffSetChanged = scaleAllOffSet-beforeScaleAllOffSet;
 				selectedShape->shape.scale.x += selectedShape->shape.scale.x * (scaleAllOffSetChanged / 100);
