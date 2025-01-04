@@ -4,3 +4,11 @@
 # Executables
 *.exe
 
+# resources
+*.csv
+
+# imgui
+*.ini
+
+# Visual Studio files
+*.json
