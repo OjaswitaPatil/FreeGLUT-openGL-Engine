@@ -4,3 +4,5 @@
 # Executables
 *.exe
 
+# temp resources
+*.csv
