@@ -27,17 +27,21 @@ void createShape(ShapeType shapeType)
     ptr->shape.color[1] = 0.0f;
     ptr->shape.color[2] = 0.0f;
 
+    ptr->shape.customShapeAttributesCount = 0;
+
     switch(shapeType)
     {
         case SPHERE:
-            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float)*3);
+            ptr->shape.customShapeAttributesCount = 3;
+            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float) * ptr->shape.customShapeAttributesCount);
             ptr->shape.customShapeAttributes[0] = 1.0f;   //glu fill
             ptr->shape.customShapeAttributes[1] = 20.0f;  //slices
             ptr->shape.customShapeAttributes[2] = 20.0f;  //stacks
             break;
 
         case CYLINDER:
-            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float)*6);
+            ptr->shape.customShapeAttributesCount = 6;
+            ptr->shape.customShapeAttributes = (float*)malloc(sizeof(float) * ptr->shape.customShapeAttributesCount);
             ptr->shape.customShapeAttributes[0] = 1.0f;   //glu fill
             ptr->shape.customShapeAttributes[1] = 0.5f;   //1st opening
             ptr->shape.customShapeAttributes[2] = 0.5f;   //2nd opening

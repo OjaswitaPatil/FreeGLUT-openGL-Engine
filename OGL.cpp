@@ -3,6 +3,7 @@
 #include "shape.h"
 #include "imGuiExtenstion.h"
 #include "LinkedList.h"
+#include "SaveAndLoadCSV.h"
 
 // global variable declarations
 BOOL bFullScreen = FALSE;
@@ -175,6 +176,12 @@ void display(void)
 		if (ImGui::Button("previous Shape"))  
 		{    
 			selectedShape = selectedShape->pre;
+		}
+
+		ImGui::NewLine();
+		if (ImGui::Button("SAVE FILE"))  
+		{    
+			saveToCSV("sample.csv", head);
 		}
 
 

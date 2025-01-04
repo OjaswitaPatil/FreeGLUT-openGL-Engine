@@ -27,6 +27,7 @@ typedef struct
 	Coordinates scale;
 	Coordinates rotationAngle;
 	float color[3];
+	int customShapeAttributesCount;
 	float *customShapeAttributes;
 }Shape;
 
