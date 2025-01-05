@@ -19,7 +19,6 @@ typedef enum
 	CYLINDER
 }ShapeType;
 
-
 typedef struct
 {
 	ShapeType shapetype;
@@ -30,6 +29,12 @@ typedef struct
 	int customShapeAttributesCount;
 	float *customShapeAttributes;
 }Shape;
+
+struct ScreenRotation
+{
+	Coordinates rotate;
+};
+extern struct ScreenRotation screenRotation;
 
 //function declarations
 void drawShape(Shape *shape);

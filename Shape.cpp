@@ -1,5 +1,7 @@
 #include "Shape.h"
 
+struct ScreenRotation screenRotation;
+
 void drawShape(Shape *shape)
 {
 	void drawTriangle(Shape *shape);

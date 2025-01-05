@@ -7,7 +7,13 @@
 #include "imGUI/imgui.h"
 #include "imGUI/imgui_impl_glut.h"
 #include "imGUI/imgui_impl_opengl2.h"
+#include "shape.h"
+#include "LinkedList.h"
+#include "SaveAndLoadCSV.h"
 #define GL_SILENCE_DEPRECATION
+
+//global variables
+extern bool showGrid;
 
 //function prototypes
 void imGuiInitialization(void);
@@ -17,6 +23,8 @@ void renderimGui(void);
 void setupMouseClickInimGui(int button, int state, int x, int y);
 void setupMouseMotionInimGui(int x, int y);
 void imGuiUninitialization(void);
+void renderimGUIControls(void);
+
 
 #endif 
 
