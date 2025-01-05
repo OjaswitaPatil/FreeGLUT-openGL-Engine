@@ -18,6 +18,9 @@ int main(int argc, char* argv[])
 	void resize(int, int);
 	void display(void);
 	void keyboard(unsigned char, int, int);
+	void keyboard_up_callback(unsigned char, int, int);
+	void special_key_callback(int, int, int);
+	void special_key_up_callback(int, int, int);
 	void mouse(int, int, int, int);
 	void mouseMotion(int x, int y);
 	void uninitialize(void);
@@ -41,6 +44,9 @@ int main(int argc, char* argv[])
     glutReshapeFunc(resize);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboard_up_callback);
+    glutSpecialFunc(special_key_callback);
+    glutSpecialUpFunc(special_key_up_callback);
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMotion); // For motion with a pressed mouse button
     glutPassiveMotionFunc(mouseMotion); // Register passive mouse motion
@@ -136,6 +142,20 @@ void display(void)
 void keyboard(unsigned char key, int x, int y)
 {
 	// code
+	//imgui-----------------------------
+	// Get the ImGui IO structure
+	ImGuiIO& io = ImGui::GetIO();
+
+    // If the key is within bounds, update the corresponding key state in ImGui
+    if (key < 256) {
+        io.KeysDown[key] = true;
+    }
+
+	// Add the character to ImGui input buffer
+    io.AddInputCharacter(key);
+
+	//--------------------------------
+
 	switch (key)
 	{
 	case 27:
@@ -158,6 +178,41 @@ void keyboard(unsigned char key, int x, int y)
 		break;
     }
 }
+// GLUT keyboard up callback
+void keyboard_up_callback(unsigned char key, int x, int y)
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Reset the key state when the key is released
+    if (key < 256) {
+        io.KeysDown[key] = false;
+    }
+}
+
+// GLUT special key callback (for arrow keys, etc.)
+void special_key_callback(int key, int x, int y)
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Translate special keys (like arrow keys) to ImGui key codes
+    if (key == GLUT_KEY_LEFT) io.KeysDown[ImGuiKey_LeftArrow] = true;
+    if (key == GLUT_KEY_RIGHT) io.KeysDown[ImGuiKey_RightArrow] = true;
+    if (key == GLUT_KEY_UP) io.KeysDown[ImGuiKey_UpArrow] = true;
+    if (key == GLUT_KEY_DOWN) io.KeysDown[ImGuiKey_DownArrow] = true;
+}
+
+// GLUT special key up callback
+void special_key_up_callback(int key, int x, int y)
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Reset special key states when they are released
+    if (key == GLUT_KEY_LEFT) io.KeysDown[ImGuiKey_LeftArrow] = false;
+    if (key == GLUT_KEY_RIGHT) io.KeysDown[ImGuiKey_RightArrow] = false;
+    if (key == GLUT_KEY_UP) io.KeysDown[ImGuiKey_UpArrow] = false;
+    if (key == GLUT_KEY_DOWN) io.KeysDown[ImGuiKey_DownArrow] = false;
+}
+
 
 void mouse(int button, int state, int x, int y)
 {

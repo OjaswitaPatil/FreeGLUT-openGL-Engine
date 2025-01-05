@@ -1,6 +1,7 @@
 #include "imGuiExtenstion.h"
 
 bool showGrid = true;
+char input_text[MAX_TEXT_INPUT_SIZE];
 
 void imGuiInitialization(void)
 {
@@ -81,7 +82,6 @@ void imGuiUninitialization(void)
 
 void renderimGUIControls(void)
 {
-		//----------------------IMGUI----------------------------
 	//engine controls
 	static float scaleAllOffSet = 0.0f;
 	{
@@ -152,13 +152,22 @@ void renderimGUIControls(void)
 		}
 
 		ImGui::NewLine();
-		if (ImGui::Button("SAVE FILE"))  
-		{    
-			saveToCSV("sample.csv", head);
+
+		// Show the button to open the popup
+		static bool show_popup = false;  // Flag to show the popup
+		bool saveFileFlag = false;
+		if (ImGui::Button("Save File"))
+		{
+			show_popup = true;  // Set flag to show the popup
+		}
+		// Call the function to handle the popup
+		saveFileFlag = ShowTextInputPopup(&show_popup, input_text, "Enter File Name:", ".csv");	
+		if(saveFileFlag == true)
+		{
+			saveToCSV(input_text, head);
+			saveFileFlag = false;
 		}
 
-
-		
 		if(selectedShape != NULL) //means linklist has at least one node
 		{	
 			//--- TRANSLATE------
@@ -232,7 +241,45 @@ void renderimGUIControls(void)
 
 		ImGui::End();
 	}
-	//--------------------------------------------------------
+}
 
+
+// Function to handle text input popup
+bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *input_text_append)
+{
+	bool textValueReceived = false;
+	
+    // Popup dialog for text input
+    if (*show_popup == true)
+    {
+        ImGui::OpenPopup(label);
+    }
+
+    if (ImGui::BeginPopupModal(label, show_popup, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        
+        // Text input field
+       ImGui::InputText(input_text_append, input_text, MAX_TEXT_INPUT_SIZE,ImGuiInputTextFlags_EnterReturnsTrue);
+
+        // OK and Cancel buttons
+        if (ImGui::Button("OK"))
+        {
+            // Process the input text as needed
+			textValueReceived = true;
+
+            *show_popup = false; // Close the popup
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+			textValueReceived = false;
+
+            *show_popup = false; // Close the popup without processing input
+        }
+
+        ImGui::EndPopup();
+    }
+
+	return textValueReceived;
 }
 

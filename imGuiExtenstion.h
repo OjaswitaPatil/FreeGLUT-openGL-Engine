@@ -12,8 +12,11 @@
 #include "SaveAndLoadCSV.h"
 #define GL_SILENCE_DEPRECATION
 
+#define MAX_TEXT_INPUT_SIZE 256
+
 //global variables
 extern bool showGrid;
+extern char input_text[MAX_TEXT_INPUT_SIZE];
 
 //function prototypes
 void imGuiInitialization(void);
@@ -23,7 +26,9 @@ void renderimGui(void);
 void setupMouseClickInimGui(int button, int state, int x, int y);
 void setupMouseMotionInimGui(int x, int y);
 void imGuiUninitialization(void);
+
 void renderimGUIControls(void);
+bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *input_text_append);
 
 
 #endif 
