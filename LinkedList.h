@@ -19,7 +19,7 @@ extern struct Node *last;
 extern struct Node *selectedShape;
 
 //function prototype
-void createShape(ShapeType shapeType);
+struct Node* createShape(ShapeType shapeType);
 
 void drawAllShapes(void);
 

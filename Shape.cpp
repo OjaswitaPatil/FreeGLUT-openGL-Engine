@@ -2,6 +2,23 @@
 
 struct ScreenRotation screenRotation;
 
+ShapeType getShapeType(int shapeType)
+{
+	switch(shapeType)
+	{
+		case 0:
+			return TRIANGLE;
+		case 1:
+			return RECTANGLE;
+		case 2:
+			return CUBE;
+		case 3:
+			return SPHERE;
+		case 4:
+			return CYLINDER;
+	}
+}
+
 void drawShape(Shape *shape)
 {
 	void drawTriangle(Shape *shape);

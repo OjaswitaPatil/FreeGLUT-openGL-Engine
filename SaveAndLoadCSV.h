@@ -5,9 +5,10 @@
 #include "globalHeaders.h"
 #include "LinkedList.h"
 
+#define MAX_LINE_LENGTH 2048
+
 int saveToCSV(char *fileName, struct Node *head);
-
-
+void loadCSV(const char *filename);
 
 #endif // SaveAndLoadCSV_H
 

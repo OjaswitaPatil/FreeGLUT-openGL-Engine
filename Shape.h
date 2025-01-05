@@ -46,6 +46,8 @@ void drawGridForEntireScene(void);
 void drawSphere(Shape *shape);
 void drawCylinder(Shape *shape) ;
 
+ShapeType getShapeType(int shapeType);
+
 
 #endif
 

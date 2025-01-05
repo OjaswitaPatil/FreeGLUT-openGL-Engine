@@ -4,7 +4,7 @@ struct Node *head = NULL;
 struct Node *last = NULL;
 struct Node *selectedShape = head;//head is null at begining
 
-void createShape(ShapeType shapeType)
+struct Node* createShape(ShapeType shapeType)
 {
    
     struct Node *ptr =(struct Node*)malloc(sizeof(struct Node));
@@ -54,8 +54,6 @@ void createShape(ShapeType shapeType)
             ptr->shape.customShapeAttributes = NULL;
     }
 
-             
-
     ptr->next = NULL;
     ptr->pre = NULL;
 
@@ -76,6 +74,8 @@ void createShape(ShapeType shapeType)
     }
 
     selectedShape = ptr;
+
+    return ptr;
 }
 
 void deleteShape(struct Node *ptr)

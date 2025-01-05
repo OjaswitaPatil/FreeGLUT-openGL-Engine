@@ -61,3 +61,98 @@ int saveToCSV(char *fileName, struct Node *head)
     // close file
     fclose(file);
 }
+
+// Function to read and process the CSV file
+void loadCSV(const char *filename) 
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) 
+    {
+        printf("Error: Could not open file during reading csv : %s\n", filename);
+        return;
+    }
+
+    char line[MAX_LINE_LENGTH];
+    float data[MAX_LINE_LENGTH];      // Array to store the values (you can adjust size)
+    int index = 0;
+    int first_row = 1;                // Flag to skip header
+
+    while (fgets(line, sizeof(line), file)) 
+    {
+        if (first_row == 1) 
+        {
+            // Skip the first row (header)
+            first_row = 0; 
+            continue;
+        }
+
+        // Tokenize the line using comma as delimiter
+        char *token = strtok(line, ",");
+
+        // Convert token to float
+        ShapeType shapeType = getShapeType(atoi(token));
+        struct Node* ptr = createShape(shapeType);
+
+        if(ptr == NULL)
+        {
+            printf("Error: Could not create shape\n");
+            return;
+        }
+
+        while (token != NULL) 
+        {
+            data[index] = atof(token);
+            index = index + 1;
+
+            // Get next token
+            token = strtok(NULL, ",");
+        }
+
+        index = 1;
+        ptr->shape.position.x = data[index++];
+        ptr->shape.position.y = data[index++];
+        ptr->shape.position.z = data[index++];
+
+        ptr->shape.scale.x = data[index++];
+        ptr->shape.scale.y = data[index++];
+        ptr->shape.scale.z = data[index++];
+
+        ptr->shape.rotationAngle.x = data[index++];
+        ptr->shape.rotationAngle.y = data[index++];
+        ptr->shape.rotationAngle.z = data[index++];
+
+        ptr->shape.color[0] = data[index++];
+        ptr->shape.color[1] = data[index++];
+        ptr->shape.color[2] = data[index++];
+
+        ptr->shape.customShapeAttributesCount = (int)data[index++];
+
+        if( shapeType == SPHERE)
+        {
+            ptr->shape.customShapeAttributes[0]= data[index++];
+            ptr->shape.customShapeAttributes[1]= data[index++];
+            ptr->shape.customShapeAttributes[2]= data[index++];
+        }
+        else if( shapeType == CYLINDER)
+        {
+            ptr->shape.customShapeAttributes[0]= data[index++];
+            ptr->shape.customShapeAttributes[1]= data[index++];
+            ptr->shape.customShapeAttributes[2]= data[index++];
+            ptr->shape.customShapeAttributes[3]= data[index++];
+            ptr->shape.customShapeAttributes[4]= data[index++];
+            ptr->shape.customShapeAttributes[5]= data[index++];
+        }
+        else
+        {
+            ptr->shape.customShapeAttributes = NULL;
+        }
+
+        //reset index for next row
+        index = 0;
+        for(int i=0; i < MAX_LINE_LENGTH; i++)
+            data[i] = 0.0f;
+    }
+
+    fclose(file);
+}
+

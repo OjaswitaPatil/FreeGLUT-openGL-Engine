@@ -152,7 +152,7 @@ void renderimGUIControls(void)
 		}
 
 		ImGui::NewLine();
-
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Save/Load Scene");
 		// Show the button to open the popup
 		static bool show_popup = false;  // Flag to show the popup
 		bool saveFileFlag = false;
@@ -166,6 +166,12 @@ void renderimGUIControls(void)
 		{
 			saveToCSV(input_text, head);
 			saveFileFlag = false;
+		}
+
+		//load file
+		if (ImGui::Button("Load File"))
+		{
+			loadCSV("resources/scene.csv");
 		}
 
 		if(selectedShape != NULL) //means linklist has at least one node
@@ -259,7 +265,7 @@ bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *i
     {
         
         // Text input field
-       ImGui::InputText(input_text_append, input_text, MAX_TEXT_INPUT_SIZE,ImGuiInputTextFlags_EnterReturnsTrue);
+        ImGui::InputText(input_text_append, input_text, MAX_TEXT_INPUT_SIZE,ImGuiInputTextFlags_EnterReturnsTrue);
 
         // OK and Cancel buttons
         if (ImGui::Button("OK"))
@@ -279,6 +285,7 @@ bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *i
 
         ImGui::EndPopup();
     }
+	
 
 	return textValueReceived;
 }
