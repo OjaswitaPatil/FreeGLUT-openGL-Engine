@@ -274,6 +274,12 @@ bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *i
 			textValueReceived = true;
 
             *show_popup = false; // Close the popup
+
+			// Ensure input_text has enough space to append input_text_append
+			if (strlen(input_text) + strlen(input_text_append) < MAX_TEXT_INPUT_SIZE)
+				strcat(input_text, input_text_append);
+			else
+				printf("Error: Not enough space to append text in file name.\n");
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
@@ -285,7 +291,6 @@ bool ShowTextInputPopup(bool *show_popup, char *input_text, char *label, char *i
 
         ImGui::EndPopup();
     }
-	
 
 	return textValueReceived;
 }
