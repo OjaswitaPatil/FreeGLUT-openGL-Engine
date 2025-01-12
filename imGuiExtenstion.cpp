@@ -84,184 +84,215 @@ void renderimGUIControls(void)
 {
 	//engine controls
 	static float scaleAllOffSet = 0.0f;
+	if(ImGui::Begin("Engine's Controls"))
 	{
-		ImGui::Begin("Engine's Controls");
+		ImVec4 active_color = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+		ImVec4 inactive_color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+		ImGui::PushStyleColor(ImGuiCol_Button, showGrid ? active_color : inactive_color);
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.45f, 0.45f, 0.45f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));
 
+		// Define a static variable for timing
+		static float lastUpdateTime = 0.0f;
+		static float displayFrameTime = 0.0f;
+		float currentTime = ImGui::GetTime(); // Get current time in seconds
+
+		if (currentTime - lastUpdateTime >= 1.0f) { // Update every second
+			displayFrameTime = 1000.0f / ImGui::GetIO().Framerate;
+			lastUpdateTime = currentTime;
+		}
+		// Display the frame time (updated every second)
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", displayFrameTime, ImGui::GetIO().Framerate);
+		
+		//show/hide grid
 		ImGui::Checkbox("Show Grid", &showGrid);
 	
 		//scene rotoation
-		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Scene Rotation");
-		ImGui::SliderFloat("SceneRotationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
-		ImGui::SliderFloat("SceneRotationY", &(screenRotation.rotate.y),-360.0f, 360.0f);
-		ImGui::SliderFloat("SceneRotationZ", &(screenRotation.rotate.z),-360.0f, 360.0f);
-		if (ImGui::Button("Reset Scene Rotation"))  
-		{                        
-			screenRotation.rotate.x = 9.0f;
-			screenRotation.rotate.y = 12.0f;
-			screenRotation.rotate.z = 0.0f;
-		}
-
-		ImGui::Separator();
-
-		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Add/Delete Shape");
-		if (ImGui::Button("Triangle"))  
-		{                        
-			createShape(TRIANGLE);
-			scaleAllOffSet = 0.0f;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Rectangle")) 
-		{                   
-			createShape(RECTANGLE);
-			scaleAllOffSet = 0.0f;
-		}
-	
-		if (ImGui::Button("Cube")) 
-		{                   
-			createShape(CUBE);
-			scaleAllOffSet = 0.0f;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Sphere"))  
-		{                        
-			createShape(SPHERE);
-			scaleAllOffSet = 0.0f;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cylinder"))  
-		{                        
-			createShape(CYLINDER);
-			scaleAllOffSet = 0.0f;
-		}
-		ImGui::NewLine();
-		if (ImGui::Button("Delete selected Shape"))  
-		{    
-			deleteShape(selectedShape);
-		}
-
-		ImGui::NewLine();
-		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Navigation");
-		if (ImGui::Button("Next Shape"))  
+		if(ImGui::CollapsingHeader("Scene Rotation"))
 		{
-			selectedShape = selectedShape->next;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("previous Shape"))  
-		{    
-			selectedShape = selectedShape->pre;
-		}
-
-		ImGui::NewLine();
-		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Save/Load Scene");
-		// Show the button to open the popup
-		static bool show_popup = false;  // Flag to show the popup
-		bool saveFileFlag = false;
-		if (ImGui::Button("Save File"))
-		{
-			show_popup = true;  // Set flag to show the popup
-		}
-		// Call the function to handle the popup
-		saveFileFlag = ShowTextInputPopup(&show_popup, input_text, "Enter File Name:", ".csv");	
-		if(saveFileFlag == true)
-		{
-			saveToCSV(input_text, head);
-			saveFileFlag = false;
+			ImGui::SliderFloat("SceneRotationX", &(screenRotation.rotate.x),-360.0f, 360.0f);
+			ImGui::SliderFloat("SceneRotationY", &(screenRotation.rotate.y),-360.0f, 360.0f);
+			ImGui::SliderFloat("SceneRotationZ", &(screenRotation.rotate.z),-360.0f, 360.0f);
+			if (ImGui::Button("Reset Scene Rotation"))  
+			{                        
+				screenRotation.rotate.x = 9.0f;
+				screenRotation.rotate.y = 12.0f;
+				screenRotation.rotate.z = 0.0f;
+			}
 		}
 
-		//load file
-		if (ImGui::Button("Load File"))
+		if(ImGui::CollapsingHeader("Add/Delete Shape"))
 		{
-			loadCSV("resources/scene.csv");
+			if (ImGui::Button("Triangle"))  
+			{                        
+				createShape(TRIANGLE);
+				scaleAllOffSet = 0.0f;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Rectangle")) 
+			{                   
+				createShape(RECTANGLE);
+				scaleAllOffSet = 0.0f;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cube")) 
+			{                   
+				createShape(CUBE);
+				scaleAllOffSet = 0.0f;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Sphere"))  
+			{                        
+				createShape(SPHERE);
+				scaleAllOffSet = 0.0f;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cylinder"))  
+			{                        
+				createShape(CYLINDER);
+				scaleAllOffSet = 0.0f;
+			}
+
+			if (ImGui::Button("Delete selected Shape"))  
+			{    
+				deleteShape(selectedShape);
+			}
+		}
+
+		if(ImGui::CollapsingHeader("Navigation"))
+		{
+			if (ImGui::Button("Next Shape"))  
+			{
+				selectedShape = selectedShape->next;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Previous Shape"))  
+			{    
+				selectedShape = selectedShape->pre;
+			}
+		}
+
+		if(ImGui::CollapsingHeader("Save/Load Scene"))
+		{
+			// Show the button to open the popup
+			static bool show_popup = false;  // Flag to show the popup
+			bool saveFileFlag = false;
+			if (ImGui::Button("Save File"))
+			{
+				show_popup = true;  // Set flag to show the popup
+			}
+			// Call the function to handle the popup
+			saveFileFlag = ShowTextInputPopup(&show_popup, input_text, "Enter File Name:", ".csv");	
+			if(saveFileFlag == true)
+			{
+				saveToCSV(input_text, head);
+				saveFileFlag = false;
+			}
+
+			//load file
+			if (ImGui::Button("Load File"))
+			{
+				loadCSV("resources/scene.csv");
+			}
 		}
 
 		if(selectedShape != NULL) //means linklist has at least one node
 		{	
-			//--- TRANSLATE------
-			ImGui::NewLine();
-			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's placement");
-			ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -15.0f, 15.0f);
-			ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -15.0f, 15.0f);
-			ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -15.0f, 15.0f);
-
-			//--- SCALE------
-			ImGui::NewLine();
-			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Scaling");
-			
-			float beforeScaleAllOffSet = scaleAllOffSet;
-			float scaleAllOffSetChanged = 0.0f;
-			if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -400.0f, 400.0f))
+			if(ImGui::CollapsingHeader("Transformations"))
 			{
-				scaleAllOffSetChanged = scaleAllOffSet-beforeScaleAllOffSet;
-				selectedShape->shape.scale.x += selectedShape->shape.scale.x * (scaleAllOffSetChanged / 100);
-				selectedShape->shape.scale.y += selectedShape->shape.scale.y * (scaleAllOffSetChanged / 100);
-				selectedShape->shape.scale.z += selectedShape->shape.scale.z * (scaleAllOffSetChanged / 100);
-			}
-     		ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), -1.0f, 5.0f);
-			ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), -1.0f, 5.0f);
-			ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), -1.0f, 5.0f);
+				//--- TRANSLATE------
+				// Draw a colored background for the TreeNode
+				if(ImGui::TreeNode("Shape's placement"))
+				{
+					ImGui::SliderFloat("PositionX", &(selectedShape->shape.position.x), -15.0f, 15.0f);
+					ImGui::SliderFloat("PositionY", &(selectedShape->shape.position.y), -15.0f, 15.0f);
+					ImGui::SliderFloat("PositionZ", &(selectedShape->shape.position.z), -15.0f, 15.0f);
+					ImGui::TreePop();
+				}
 
-			//--- Rotation------
-			ImGui::NewLine();
-			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Rotation");
-			ImGui::SliderFloat("rotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
-			ImGui::SliderFloat("rotationY", &(selectedShape->shape.rotationAngle.y), 0.0f, 360.0f);
-			ImGui::SliderFloat("rotationZ", &(selectedShape->shape.rotationAngle.z), 0.0f, 360.0f);
+				//--- SCALE------
+				if(ImGui::TreeNode("Shape's Scaling"))
+				{
+					float beforeScaleAllOffSet = scaleAllOffSet;
+					float scaleAllOffSetChanged = 0.0f;
+					if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -400.0f, 400.0f))
+					{
+						scaleAllOffSetChanged = scaleAllOffSet-beforeScaleAllOffSet;
+						selectedShape->shape.scale.x += selectedShape->shape.scale.x * (scaleAllOffSetChanged / 100);
+						selectedShape->shape.scale.y += selectedShape->shape.scale.y * (scaleAllOffSetChanged / 100);
+						selectedShape->shape.scale.z += selectedShape->shape.scale.z * (scaleAllOffSetChanged / 100);
+					}
+					ImGui::SliderFloat("ScaleX", &(selectedShape->shape.scale.x), -1.0f, 5.0f);
+					ImGui::SliderFloat("ScaleY", &(selectedShape->shape.scale.y), -1.0f, 5.0f);
+					ImGui::SliderFloat("ScaleZ", &(selectedShape->shape.scale.z), -1.0f, 5.0f);
+					ImGui::TreePop();
+				}
 
-			//--- COlor -----
-			ImGui::NewLine();
-			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Color");
-			switch (selectedShape->shape.shapetype)
-			{
-			case CUBE:
-				ImGui::ColorEdit3("color1", (float*)(selectedShape->shape.colors));
-				ImGui::ColorEdit3("color2", (float*)(selectedShape->shape.colors) + 4);
-				ImGui::ColorEdit3("color3", (float*)(selectedShape->shape.colors) + 8);
-				ImGui::ColorEdit3("color4", (float*)(selectedShape->shape.colors) + 12);
-				ImGui::ColorEdit3("color5", (float*)(selectedShape->shape.colors) + 16);
-				ImGui::ColorEdit3("color6", (float*)(selectedShape->shape.colors) + 20);
-				break;
-			
-			default:
-				ImGui::ColorEdit3("color", (float*)selectedShape->shape.colors);
-				break;
-			}
-			
+				//--- Rotation------
+				if(ImGui::TreeNode("Shape's Rotation"))
+				{
+					ImGui::SliderFloat("RotationX", &(selectedShape->shape.rotationAngle.x), 0.0f, 360.0f);
+					ImGui::SliderFloat("RotationY", &(selectedShape->shape.rotationAngle.y), 0.0f, 360.0f);
+					ImGui::SliderFloat("RotationZ", &(selectedShape->shape.rotationAngle.z), 0.0f, 360.0f);
+					ImGui::TreePop();
+				}
 
-			//custom attributes
-			static bool enableWireframe = false;
-			if(selectedShape->shape.shapetype == SPHERE)
-			{
-				ImGui::NewLine();
-				ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Custom attributes");
-				ImGui::Checkbox("Enable Wireframe", &enableWireframe);
-				if(enableWireframe == true)
-					selectedShape->shape.customShapeAttributes[0]= 0.0f;
-				else
-					selectedShape->shape.customShapeAttributes[0]= 1.0f;
-				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 60.0f);
-				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 60.0f);
-			}
-			if(selectedShape->shape.shapetype == CYLINDER)
-			{
-				ImGui::NewLine();
-				ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Custom attributes");
-				ImGui::Checkbox("Enable Wireframe", &enableWireframe);
-				if(enableWireframe == true)
-					selectedShape->shape.customShapeAttributes[0]= 0.0f;
-				else
-					selectedShape->shape.customShapeAttributes[0]= 1.0f;
-				ImGui::SliderFloat("1st opening redius", &(selectedShape->shape.customShapeAttributes[1]), 0.0f, 10.0f);
-				ImGui::SliderFloat("2nd opening redius", &(selectedShape->shape.customShapeAttributes[2]), 0.0f, 10.0f);
-				ImGui::SliderFloat("length", &(selectedShape->shape.customShapeAttributes[3]), 0.0f, 20.0f);
-				ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[4]), 1.0f, 60.0f);
-				ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 60.0f);
-			}
+				//--- COlor -----
+				if(ImGui::TreeNode("Shape's Color"))
+				{
+					switch (selectedShape->shape.shapetype)
+					{
+					case CUBE:
+						ImGui::ColorEdit3("Color1", (float*)(selectedShape->shape.colors));
+						ImGui::ColorEdit3("Color2", (float*)(selectedShape->shape.colors) + 4);
+						ImGui::ColorEdit3("Color3", (float*)(selectedShape->shape.colors) + 8);
+						ImGui::ColorEdit3("Color4", (float*)(selectedShape->shape.colors) + 12);
+						ImGui::ColorEdit3("Color5", (float*)(selectedShape->shape.colors) + 16);
+						ImGui::ColorEdit3("Color6", (float*)(selectedShape->shape.colors) + 20);
+						break;
+					
+					default:
+						ImGui::ColorEdit3("color", (float*)selectedShape->shape.colors);
+						break;
+					}
 
-			//ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
+					ImGui::TreePop();
+				}
+				
+				//custom attributes
+				if(selectedShape->shape.customShapeAttributes != NULL)
+				{
+					if(ImGui::TreeNode("Shape's Custom attributes"))
+					{
+						static bool enableWireframe = false;
+						ImGui::Checkbox("Enable Wireframe", &enableWireframe);
+						if(enableWireframe == true)
+							selectedShape->shape.customShapeAttributes[0]= 0.0f;
+						else
+							selectedShape->shape.customShapeAttributes[0]= 1.0f;
+
+						if(selectedShape->shape.shapetype == SPHERE)
+						{
+							ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[1]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[2]), 1.0f, 60.0f);
+						}
+						if(selectedShape->shape.shapetype == CYLINDER)
+						{
+							ImGui::SliderFloat("1st opening radius", &(selectedShape->shape.customShapeAttributes[1]), 0.0f, 10.0f);
+							ImGui::SliderFloat("2nd opening radius", &(selectedShape->shape.customShapeAttributes[2]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Length", &(selectedShape->shape.customShapeAttributes[3]), 0.0f, 20.0f);
+							ImGui::SliderFloat("Slices", &(selectedShape->shape.customShapeAttributes[4]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks", &(selectedShape->shape.customShapeAttributes[5]), 1.0f, 60.0f);
+						}
+						//ImGui::Text("currently selected shape= %d", selectedShape->shape.shapetype);
+						ImGui::TreePop();
+					}
+				}
+			}
 		}
-
-		ImGui::End();
+		ImGui::PopStyleColor(3);
 	}
+	ImGui::End();
 }
 
 
