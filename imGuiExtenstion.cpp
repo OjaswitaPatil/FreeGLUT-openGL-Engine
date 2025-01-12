@@ -210,7 +210,22 @@ void renderimGUIControls(void)
 			//--- COlor -----
 			ImGui::NewLine();
 			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Shape's Color");
-			ImGui::ColorEdit3("color", (float*)selectedShape->shape.color);
+			switch (selectedShape->shape.shapetype)
+			{
+			case CUBE:
+				ImGui::ColorEdit3("color1", (float*)(selectedShape->shape.colors));
+				ImGui::ColorEdit3("color2", (float*)(selectedShape->shape.colors) + 4);
+				ImGui::ColorEdit3("color3", (float*)(selectedShape->shape.colors) + 8);
+				ImGui::ColorEdit3("color4", (float*)(selectedShape->shape.colors) + 12);
+				ImGui::ColorEdit3("color5", (float*)(selectedShape->shape.colors) + 16);
+				ImGui::ColorEdit3("color6", (float*)(selectedShape->shape.colors) + 20);
+				break;
+			
+			default:
+				ImGui::ColorEdit3("color", (float*)selectedShape->shape.colors);
+				break;
+			}
+			
 
 			//custom attributes
 			static bool enableWireframe = false;

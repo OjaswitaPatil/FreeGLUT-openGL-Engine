@@ -14,43 +14,91 @@ int saveToCSV(char *fileName, struct Node *head)
     }
 
     // write data to file   
-    fprintf(file, "shapetype, posX, posY, posZ, scaleX, scaleY, scaleZ, rotX, rotY, rotZ , colorR, colorG, colorB, customShapeAttributesCount, CSA0, CSA1, CSA2, CSA3, CSA4, CSA5\n");
+    fprintf(file, "shapetype,"
+        "posX, posY, posZ,"
+        "scaleX, scaleY, scaleZ," 
+        "rotX, rotY, rotZ," 
+        "ColorCount," 
+        "customShapeAttributesCount,"
+        "C1r, C1g, C1b, C1a,"
+        "C2r, C2g, C2b, C2a,"
+        "C3r, C3g, C3b, C3a,"
+        "C4r, C4g, C4b, C4a,"
+        "C5r, C5g, C5b, C5a,"
+        "C6r, C6g, C6b, C6a," 
+        "CSA0, CSA1, CSA2, CSA3, CSA4, CSA5, CSA6, CSA7, CSA8, CSA9,"
+        "filepath\n");
 
     // write data of each SHAPE to file
     int flag = 0;
     struct Node *ptr = head;
-    int maxCountOfCustomShapeAttributes = 6;
     
     while(ptr != NULL && flag == 0)
     {
         fprintf(
             file, 
-            "%d,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%d,", 
+            "%d,"
+            "%lf,%lf,%lf,"
+            "%lf,%lf,%lf,"
+            "%lf,%lf,%lf,"
+            "%d,"
+            "%d,", 
             ptr->shape.shapetype, 
             ptr->shape.position.x, ptr->shape.position.y, ptr->shape.position.z, 
             ptr->shape.scale.x, ptr->shape.scale.y, ptr->shape.scale.z, 
             ptr->shape.rotationAngle.x, ptr->shape.rotationAngle.y, ptr->shape.rotationAngle.z, 
-            ptr->shape.color[0], ptr->shape.color[1], ptr->shape.color[2], 
+            ptr->shape.colorsCount, 
             ptr->shape.customShapeAttributesCount
         );
 
+        //writing colors to file
+
+        switch (ptr->shape.shapetype)
+        {
+        case CUBE:
+            for(int i=0; i < ptr->shape.colorsCount; i++)
+            {
+                fprintf(file, "%lf,%lf,%lf,%lf,", 
+                    ptr->shape.colors[(i * COLORRGBA) + 0], 
+                    ptr->shape.colors[(i * COLORRGBA) + 1], 
+                    ptr->shape.colors[(i * COLORRGBA) + 2], 
+                    ptr->shape.colors[(i * COLORRGBA) + 3]
+                );
+            }
+            break;
+        
+        default:
+            for(int i=0; i < ptr->shape.colorsCount; i++)
+            {
+                fprintf(file, "%lf,%lf,%lf,%lf,", 
+                    ptr->shape.colors[(i * COLORRGBA) + 0], 
+                    ptr->shape.colors[(i * COLORRGBA) + 1], 
+                    ptr->shape.colors[(i * COLORRGBA) + 2], 
+                    ptr->shape.colors[(i * COLORRGBA) + 3]
+                );
+            }
+            //set extras to 0
+            for(int i=ptr->shape.colorsCount; i < MAX_COUNT_OF_COLORS; i++)
+            {
+                fprintf(file, "0.0,0.0,0.0,0.0,");
+            }
+            break;
+        }
+
         for(int i=0; i < ptr->shape.customShapeAttributesCount; i++)
         {
-            fprintf(file, "%lf", ptr->shape.customShapeAttributes[i]);
-
-            if(i != maxCountOfCustomShapeAttributes-1)
-                fprintf(file, ",");
+            fprintf(file, "%lf,", ptr->shape.customShapeAttributes[i]);
         }
 
-        for(int i=ptr->shape.customShapeAttributesCount; i < maxCountOfCustomShapeAttributes; i++)
+        for(int i=ptr->shape.customShapeAttributesCount; i < MAX_COUNT_OF_CUSTOMSHAPEATTRIBUTES; i++)
         {
-            fprintf(file, "0.0");
-
-            if(i != maxCountOfCustomShapeAttributes-1)
-                fprintf(file, ",");
+            fprintf(file, "0.0,");
         }
 
-    fprintf(file, "\n");
+        //filepath [Future use]
+        char* filepath = "NONE"; 
+        fprintf(file, "%s", filepath);
+        fprintf(file, "\n");
 
         if(ptr->next == head)
            flag = 1;
@@ -121,31 +169,72 @@ void loadCSV(const char *filename)
         ptr->shape.rotationAngle.y = data[index++];
         ptr->shape.rotationAngle.z = data[index++];
 
-        ptr->shape.color[0] = data[index++];
-        ptr->shape.color[1] = data[index++];
-        ptr->shape.color[2] = data[index++];
-
+        ptr->shape.colorsCount = (int)data[index++];
         ptr->shape.customShapeAttributesCount = (int)data[index++];
 
-        if( shapeType == SPHERE)
+        //colors
+        switch (ptr->shape.shapetype)
         {
+        case CUBE:
+            for(int i=0; i < ptr->shape.colorsCount; i++)
+            {
+                ptr->shape.colors[(i * COLORRGBA) + 0] = data[index++];
+                ptr->shape.colors[(i * COLORRGBA) + 1] = data[index++]; 
+                ptr->shape.colors[(i * COLORRGBA) + 2] = data[index++]; 
+                ptr->shape.colors[(i * COLORRGBA) + 3] = data[index++];
+            }
+            break;
+        
+        default:
+            for(int i=0; i < ptr->shape.colorsCount; i++)
+            {
+                ptr->shape.colors[(i * COLORRGBA) + 0] = data[index++];
+                ptr->shape.colors[(i * COLORRGBA) + 1] = data[index++]; 
+                ptr->shape.colors[(i * COLORRGBA) + 2] = data[index++]; 
+                ptr->shape.colors[(i * COLORRGBA) + 3] = data[index++];
+            }
+            //skip extra colors
+            for(int i=ptr->shape.colorsCount; i < MAX_COUNT_OF_COLORS; i++)
+                index = index + 4;
+            break;
+        }
+
+        //customShapeAttributes
+        switch (ptr->shape.shapetype)
+        {
+        case SPHERE:
             ptr->shape.customShapeAttributes[0]= data[index++];
             ptr->shape.customShapeAttributes[1]= data[index++];
             ptr->shape.customShapeAttributes[2]= data[index++];
-        }
-        else if( shapeType == CYLINDER)
-        {
+
+            //skip extra customShapeAttributes
+            for(int i=ptr->shape.customShapeAttributesCount; i < MAX_COUNT_OF_CUSTOMSHAPEATTRIBUTES; i++)
+                index = index + 1;
+            break;
+
+        case CYLINDER:
             ptr->shape.customShapeAttributes[0]= data[index++];
             ptr->shape.customShapeAttributes[1]= data[index++];
             ptr->shape.customShapeAttributes[2]= data[index++];
             ptr->shape.customShapeAttributes[3]= data[index++];
             ptr->shape.customShapeAttributes[4]= data[index++];
             ptr->shape.customShapeAttributes[5]= data[index++];
-        }
-        else
-        {
+
+            //skip extra customShapeAttributes
+            for(int i=ptr->shape.customShapeAttributesCount; i < MAX_COUNT_OF_CUSTOMSHAPEATTRIBUTES; i++)
+                index = index + 1;
+            break;
+        
+        default:
             ptr->shape.customShapeAttributes = NULL;
+            //skip extra customShapeAttributes
+            for(int i=ptr->shape.customShapeAttributesCount; i < MAX_COUNT_OF_CUSTOMSHAPEATTRIBUTES; i++)
+                index = index + 1;
+            break;
         }
+
+        //filepath [Future use]
+        index = index + 1;
 
         //reset index for next row
         index = 0;

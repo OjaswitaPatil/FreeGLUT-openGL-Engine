@@ -59,7 +59,7 @@ void drawTriangle(Shape *shape)
 	glScalef(shape->scale.x, shape->scale.y, shape->scale.z);
 
 	glBegin(GL_TRIANGLES);
-	glColor3f(shape->color[0], shape->color[1], shape->color[2]);
+	glColor4f(shape->colors[0], shape->colors[1], shape->colors[2], shape->colors[3]);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-1.0f, -1.0f, 0.0f);
 	glVertex3f(1.0f, -1.0f, 0.0f);
@@ -83,7 +83,7 @@ void drawRectangle(Shape *shape)
 
 	glBegin(GL_QUADS);
 
-	glColor3f(shape->color[0], shape->color[1], shape->color[2]);
+	glColor4f(shape->colors[0], shape->colors[1], shape->colors[2], shape->colors[3]);
 	glVertex3f(-1.0f, 1.0f, 0.0f);
 	glVertex3f(-1.0f, -1.0f, 0.0f);
 	glVertex3f(1.0f, -1.0f, 0.0f);
@@ -107,43 +107,50 @@ void drawCube(Shape *shape)
 		// Draw the cube with separate colors for each face
         glBegin(GL_QUADS);  // Draw each face of the cube as a quadrilateral
 
+		int index = 0;
         // Front face (Red)
-        glColor3f(1.0f, 0.0f, 0.0f);
+		glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f(-1.0f, -1.0f,  1.0f);  // Bottom-left
         glVertex3f( 1.0f, -1.0f,  1.0f);  // Bottom-right
         glVertex3f( 1.0f,  1.0f,  1.0f);  // Top-right
         glVertex3f(-1.0f,  1.0f,  1.0f);  // Top-left
 
         // Back face (Green)
-        glColor3f(0.0f, 1.0f, 0.0f);
+        glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f(-1.0f, -1.0f, -1.0f);  // Bottom-left
         glVertex3f(-1.0f,  1.0f, -1.0f);  // Top-left
         glVertex3f( 1.0f,  1.0f, -1.0f);  // Top-right
         glVertex3f( 1.0f, -1.0f, -1.0f);  // Bottom-right
 
         // Top face (Blue)
-        glColor3f(0.0f, 0.0f, 1.0f);
+        glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f(-1.0f,  1.0f, -1.0f);  // Back-left
         glVertex3f(-1.0f,  1.0f,  1.0f);  // Front-left
         glVertex3f( 1.0f,  1.0f,  1.0f);  // Front-right
         glVertex3f( 1.0f,  1.0f, -1.0f);  // Back-right
 
         // Bottom face (Yellow)
-        glColor3f(1.0f, 1.0f, 0.0f);
+        glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f(-1.0f, -1.0f, -1.0f);  // Back-left
         glVertex3f( 1.0f, -1.0f, -1.0f);  // Back-right
         glVertex3f( 1.0f, -1.0f,  1.0f);  // Front-right
         glVertex3f(-1.0f, -1.0f,  1.0f);  // Front-left
 
         // Right face (Cyan)
-        glColor3f(0.0f, 1.0f, 1.0f);
+        glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f( 1.0f, -1.0f, -1.0f);  // Bottom-front
         glVertex3f( 1.0f,  1.0f, -1.0f);  // Top-front
         glVertex3f( 1.0f,  1.0f,  1.0f);  // Top-back
         glVertex3f( 1.0f, -1.0f,  1.0f);  // Bottom-back
 
         // Left face (Magenta)
-        glColor3f(1.0f, 0.0f, 1.0f);
+        glColor4f(shape->colors[index], shape->colors[index+1], shape->colors[index+2], shape->colors[index+3]);
+		index = index + 4;
         glVertex3f(-1.0f, -1.0f, -1.0f);  // Bottom-back
         glVertex3f(-1.0f, -1.0f,  1.0f);  // Bottom-front
         glVertex3f(-1.0f,  1.0f,  1.0f);  // Top-front
@@ -267,7 +274,7 @@ void drawSphere(Shape *shape)
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
     // Draw the sphere
-    glColor3f(shape->color[0], shape->color[1], shape->color[2]);
+    glColor4f(shape->colors[0], shape->colors[1], shape->colors[2], shape->colors[3]);
     gluSphere(quadric, 1.5f, (int)shape->customShapeAttributes[1], (int)shape->customShapeAttributes[2]);  // Radius = 1.0, slices = 32, stacks = 32
 
     gluDeleteQuadric(quadric);  // Clean up and delete the quadric object
@@ -297,7 +304,7 @@ void drawCylinder(Shape *shape)
     gluQuadricNormals(quadric, GLU_SMOOTH); // Smooth shading
 
     // Draw a cylinder with radius 1, height 3, and 32 slices
-    glColor3f(shape->color[0], shape->color[1], shape->color[2]);
+    glColor4f(shape->colors[0], shape->colors[1], shape->colors[2], shape->colors[3]);
     gluCylinder(quadric, shape->customShapeAttributes[1] ,shape->customShapeAttributes[2], shape->customShapeAttributes[3],  (int)shape->customShapeAttributes[4], (int)shape->customShapeAttributes[5]);
 
     gluDeleteQuadric(quadric);  // Clean up

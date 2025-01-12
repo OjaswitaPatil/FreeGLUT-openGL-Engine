@@ -23,10 +23,30 @@ struct Node* createShape(ShapeType shapeType)
     ptr->shape.scale.y = 0.35f;
     ptr->shape.scale.z = 0.35f;
 
-    ptr->shape.color[0] = 1.0f;
-    ptr->shape.color[1] = 0.0f;
-    ptr->shape.color[2] = 0.0f;
+    //Colors
+    int index = 0;
+    switch(shapeType)
+    {
+        case CUBE:
+            ptr->shape.colorsCount = 6;
+            ptr->shape.colors = (float*)malloc(sizeof(float) * COLORRGBA * ptr->shape.colorsCount);
+            ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; //red
+            ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; //green
+            ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; //blue
+            ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; //yellow
+            ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; //cyam
+            ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; //pink
+            break;
+            
+        default:
+            ptr->shape.colorsCount = 1;
+            ptr->shape.colors = (float*)malloc(sizeof(float) * COLORRGBA * ptr->shape.colorsCount);
+            ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 0.0f; ptr->shape.colors[index++] = 1.0f; ptr->shape.colors[index++] = 1.0f; //pink
+            break;
+            
+    }
 
+    //customShapeAttributes
     ptr->shape.customShapeAttributesCount = 0;
 
     switch(shapeType)
@@ -52,6 +72,7 @@ struct Node* createShape(ShapeType shapeType)
             
         default:
             ptr->shape.customShapeAttributes = NULL;
+            break;
     }
 
     ptr->next = NULL;
@@ -110,6 +131,9 @@ void deleteShape(struct Node *ptr)
         selectedShape = selectedShape->pre;
     else   
         selectedShape = NULL;
+
+    //delete colors heap memory
+    free(ptr->shape.colors);
 
     //delete customShapeAttrubute heap memory if its not null
     if(ptr->shape.customShapeAttributes != NULL)  

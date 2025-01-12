@@ -3,6 +3,10 @@
 
 #include "globalHeaders.h"
 
+#define MAX_COUNT_OF_COLORS 6
+#define MAX_COUNT_OF_CUSTOMSHAPEATTRIBUTES 10
+#define COLORRGBA 4
+
 typedef struct
 {
 	float x;
@@ -25,7 +29,8 @@ typedef struct
 	Coordinates position;
 	Coordinates scale;
 	Coordinates rotationAngle;
-	float color[3];
+	int colorsCount;
+	float *colors;
 	int customShapeAttributesCount;
 	float *customShapeAttributes;
 }Shape;
